@@ -9,9 +9,7 @@ from src.evolutionary_algorithm import CGPGeneticAlgorithm
 
 def define_seedling():
     """Produces the seedling parameters.
-
     The seedling is the initial starting point of development for each organism.
-
     Returns:
         A dictionary containing parameters of the seedling.
     """
