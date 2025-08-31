@@ -1,13 +1,12 @@
-import numpy as np
 import os
 import csv
-import pickle
-import math
-from multiprocessing import Pool, cpu_count
 import copy
+import pickle
+import numpy as np
+from multiprocessing import Pool, cpu_count
+from src.controller import CGPController
 
-import cgp
-from src.controller import CGPController  # the new class
+
 
 class CGPGeneticAlgorithm:
     def __init__(self, seedling, environment, genome_params_node,genome_params_edge,
@@ -36,7 +35,7 @@ class CGPGeneticAlgorithm:
         self.num_threads = num_threads
         self.max_threads = cpu_count()
         self.num_processes = min(self.num_threads, self.max_threads)
-        self._rng = np.random.RandomState(seed)  # store your RNG once
+        self._rng = np.random.RandomState(seed)
 
         # Build initial population
         self.controllers = []
@@ -55,7 +54,7 @@ class CGPGeneticAlgorithm:
         self.best_controller = None
 
     def evaluate_controller(self, controller):
-        """Evaluate a single CGP controller and return its raw (un-negated) reward."""
+        """Evaluate a single CGP controller and return its raw reward"""
         return controller.evaluate(self.environment, self.num_devo_steps, self.grn_type)
 
     def fit(self):
@@ -63,37 +62,28 @@ class CGPGeneticAlgorithm:
         highest_rewards = []
         avg_rewards = []
 
-        top_controllers = []   # keep track of top from previous gen
+        top_controllers = []
         top_rewards = np.array([])
 
         for gen in range(self.generations):
-            # 1) Evaluate the current population
             with Pool(processes=self.num_processes) as pool:
                 new_rewards = np.array(pool.map(self.evaluate_controller, self.controllers))
 
-            # 2) Multiply by -1 to "maximize" (like Andrew's approach)
             new_rewards = new_rewards * -1
 
-            # 3) Combine with top from previous generation (if gen != 0)
-            # to mimic Andrew's method of carrying over top performers
             rewards = np.zeros((len(self.controllers) + len(top_controllers),))
             rewards[:len(new_rewards)] = new_rewards
 
-            # If we have any top_controllers from the previous gen, put their old best rewards in
             if gen != 0 and len(top_rewards) > 0:
                 rewards[len(new_rewards):] = top_rewards
 
-                # Also combine the populations
                 self.controllers = self.controllers + top_controllers
 
-            # 4) Get the best index overall
             best_idx = np.argmax(rewards)
             self.best_controller = self.controllers[best_idx]
 
-            # 5) Select the top K and produce the next generation
             top_controllers, top_rewards = self._select_top_k(gen, rewards)
 
-            # 6) Print info if needed
             current_best = rewards.max()
             current_avg = rewards.mean()
             if self.verbose and ((gen % self.print_every == 0) or (gen == 0)):
@@ -103,7 +93,6 @@ class CGPGeneticAlgorithm:
             highest_rewards.append(round(current_best, 6))
             avg_rewards.append(round(current_avg, 6))
 
-        # 7) Write CSV and save best
         self._write_reward_csv(gens, highest_rewards, avg_rewards)
         self.save_best_controller(self.best_controller)
         print(f"Best controller: Gen={self.best_controller.gen_id}, Pop={self.best_controller.pop_id}")
@@ -111,22 +100,19 @@ class CGPGeneticAlgorithm:
     def _select_top_k(self, gen, rewards):
         """
         Keep the best self.top_k controllers, then fill the new population
-        with mutated copies of those elites.  NO crossover.
+        with mutated copies of those elites.
         """
 
-        # ---------- 1) pick the elites ----------
         idxs = np.argpartition(rewards, -self.top_k)[-self.top_k:]
         idxs = idxs[np.argsort(-rewards[idxs])]  # sort high-to-low
         elites = [self.controllers[i] for i in idxs]
         elite_rewards = rewards[idxs]
 
-        # ---------- 2) decide new population size ----------
         self._next_population_size()
-        need = self.population_size - self.top_k  # children we must spawn
-        #mut_var = self._get_mutation_variance(gen)  # gen-dependent ε
+        need = self.population_size - self.top_k
+        #mut_var = self._get_mutation_variance(gen)
         mut_var = self._get_mutation_variance_linear(gen)
 
-        # ---------- 3) spawn children via mutation only ----------
         rng = self._rng
         new_population = []
         next_pop_id = self.top_k
@@ -134,7 +120,6 @@ class CGPGeneticAlgorithm:
         while len(new_population) < need:
             parent = rng.choice(elites)
 
-            # mutate the edge- and node-genomes together
             child_edge, child_node = self._mutate_genome_pair(
                 (parent.genome_edge, parent.genome_node), mut_var)
 
@@ -150,7 +135,6 @@ class CGPGeneticAlgorithm:
             new_population.append(child)
             next_pop_id += 1
 
-        # ---------- 4) finalise the population ----------
         self.controllers = new_population
         return elites, elite_rewards
 
@@ -163,7 +147,7 @@ class CGPGeneticAlgorithm:
         return g_edge, g_node
 
     def _get_mutation_variance(self, generation):
-        """Mirrors Andrew's approach for decreasing epsilon over generations."""
+        """Decreasing epsilon over generations."""
         return self.initial_epsilon / (1 + self.epsilon_taper * generation)
 
     def _get_mutation_variance_linear(self, generation):
@@ -174,7 +158,7 @@ class CGPGeneticAlgorithm:
         return max(ef, var)
 
     def _next_population_size(self):
-        """Mirrors Andrew's approach to reduce population size over generations."""
+        """Reduce population size over generations."""
         self.population_size = int(max(self.population_size * self.population_decay, self.min_population_size))
 
     def _write_reward_csv(self, gens, bests, avgs):
