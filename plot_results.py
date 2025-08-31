@@ -56,7 +56,7 @@ def define_environment():
                       [0, -17000],  # Node 4
                       [0, 0],  # Node 5
                       [0, 0],  # Node 6
-                      [0, -0],  # Node 7
+                      [0, 0],  # Node 7
                       [0, 0]])  # Node 8
 
     environment = Environment(reactions=reactions, loads=loads)
