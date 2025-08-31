@@ -1,7 +1,7 @@
 # Cartesian Genetic Programming for Truss Optimization
 
 <p align="center">
-  <img src="assets/Node_Edge_CGP_best_devo.gif" alt="Development Process of the Truss Structure">
+  <img src="assets/best_devo.gif" alt="Development Process of the Truss Structure">
 </p>
 
 This repository contains the Python implementation for the paper: **[EvoDevo: Bioinspired Generative Design via Evolutionary Graph-Based Development](https://doi.org/10.3390/a18080467)**. It specifically focuses on the Cartesian Genetic Programming (CGP) methods discussed in the paper for optimising the design of truss structures.
