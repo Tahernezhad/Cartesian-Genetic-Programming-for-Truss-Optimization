@@ -50,13 +50,13 @@ def define_environment():
                           [0, 1]])  # Node 8
 
     loads = np.array([[0, 0],  # Node 0
-                      [10000, 0],  # Node 1
+                      [0, 0],  # Node 1
                       [0, 0],  # Node 2
                       [0, 0],  # Node 3
                       [0, -17000],  # Node 4
                       [0, 0],  # Node 5
                       [0, 0],  # Node 6
-                      [0, -17000],  # Node 7
+                      [0, -0],  # Node 7
                       [0, 0]])  # Node 8
 
     environment = Environment(reactions=reactions, loads=loads)
@@ -109,7 +109,7 @@ def replay_best(run_dir: str, grn_type: str, devo_steps: int):
         fig,ax=plt.subplots(figsize=(6,4))
         plot_truss(ax, org.nodes, org.edges, org.cs_areas, caption)
         fig.text(0.5,0.02,f"Method: {grn_type}",ha="center",fontsize=9)
-        p=os.path.join(frames_dir,f"frame_{step}.eps")
+        p=os.path.join(frames_dir,f"frame_{step}.jpg")
         fig.savefig(p); plt.close(fig); frame_paths.append(p)
 
     save_frame(0,"Step 0")
@@ -165,7 +165,7 @@ def replay_best(run_dir: str, grn_type: str, devo_steps: int):
         ax.plot(steps,data,'o-',color=c)
         ax.set_title(l); ax.set_xlabel("Step")
     fig.tight_layout()
-    fig.savefig(os.path.join(results_dir,"Node_Edge_CGP_devo_plot.eps"))
+    fig.savefig(os.path.join(results_dir,"Node_Edge_CGP_devo_plot.jpg"))
     plt.close(fig)
 
 
@@ -189,7 +189,7 @@ def replay_best(run_dir: str, grn_type: str, devo_steps: int):
         ax.grid(True)
         ax.legend(fontsize=6, ncol=5, framealpha=.9)
         fig.tight_layout()
-        fig.savefig(os.path.join(results_dir, 'edge_area_evolution.eps'))
+        fig.savefig(os.path.join(results_dir, 'edge_area_evolution.jpg'))
     plt.close(fig)
 
 
@@ -210,7 +210,7 @@ def replay_best(run_dir: str, grn_type: str, devo_steps: int):
     ax.grid(True)
     ax.legend(fontsize=6, ncol=5, framealpha=.9)
     fig.tight_layout()
-    fig.savefig(os.path.join(results_dir, 'node_trajectories.eps'))
+    fig.savefig(os.path.join(results_dir, 'node_trajectories.jpg'))
     plt.close(fig)
 
 
@@ -228,7 +228,7 @@ def plot_generation_rewards(run_dir: str):
     plt.plot(gens, avg,  'x-', label="Avg")
     plt.xlabel("Generation"); plt.ylabel("Reward")
     plt.title("Reward trajectory"); plt.grid(True); plt.legend()
-    out = os.path.join(run_dir, "results", "Node_Edge_CGP_evo_plot.eps")
+    out = os.path.join(run_dir, "results", "Node_Edge_CGP_evo_plot.jpg")
     plt.savefig(out); plt.close()
     print("Saved reward plot →", out)
 
@@ -236,7 +236,7 @@ def plot_generation_rewards(run_dir: str):
 # ──────────────────────────── main ──────────────────────────────────
 def main():
     # ----- USER SETTINGS -----
-    run_dir   = "data/29-05-2025-17-24-44-node-edge-etg"
+    run_dir   = "data/31-08-2025-00-32-23-node-edge-etg"
     grn_type  = "node-edge-etg"
     devo_steps = 10
     # -------------------------
