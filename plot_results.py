@@ -140,7 +140,7 @@ def replay_best(run_dir: str, grn_type: str, devo_steps: int):
 
     if frame_paths:
         gif_path=os.path.join(results_dir,"best_devo.gif")
-        imageio.mimsave(gif_path,[imageio.imread(p) for p in frame_paths],fps=1)
+        imageio.mimsave(gif_path,[imageio.imread(p) for p in frame_paths],fps=1, loop=0)
 
 
     header = ["step"]+[f"x{idx}" for idx in range(n_nodes)]+[f"y{idx}" for idx in range(n_nodes)]
@@ -236,7 +236,7 @@ def plot_generation_rewards(run_dir: str):
 # ──────────────────────────── main ──────────────────────────────────
 def main():
     # ----- USER SETTINGS -----
-    run_dir   = "data/30-08-2025-20-36-26-node-edge-etg"
+    run_dir   = "data/29-05-2025-17-24-44-node-edge-etg"
     grn_type  = "node-edge-etg"
     devo_steps = 10
     # -------------------------

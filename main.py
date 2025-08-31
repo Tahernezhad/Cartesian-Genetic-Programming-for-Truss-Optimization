@@ -170,7 +170,7 @@ if __name__ == "__main__":
             genome_params_node=genome_params_node,
             genome_params_edge=genome_params_edge,
             generations=150,
-            population_size=200,
+            population_size=512,
             population_decay=1.0,
             min_population_size=128,
             run_dir=run_dir,
