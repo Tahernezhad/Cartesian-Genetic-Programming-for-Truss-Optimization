@@ -67,124 +67,129 @@ def define_environment():
     return environment
 
 if __name__ == "__main__":
-    for i in range(1, 2):
 
-        grn_type = "node-edge-etg"
-        seed=i
-        np.random.seed(seed)
-        print(f"Random seed: {seed}")
+    fixed_seed = None
 
-        run_dir = make_run_dir(grn_type)
-        seedling = define_seedling()
-        environment = define_environment()
+    if fixed_seed is None:
+        seed = int(time() * 1000) % (2 ** 32 - 1)
+    else:
+        seed = fixed_seed
 
-        if grn_type == "node-edge-etg":
-            genome_params_edge = {
-                "n_inputs": 2,
-                "n_outputs": 1,
-                "n_columns": 8,
-                "n_rows": 2,
-                "levels_back": 3,
-                "primitives": (
-                    cgp.Add,
-                    cgp.Sub,
-                    cgp.Mul,
-                    cgp.ConstantFloat,
-                ),
-            }
-            genome_params_node = {
-                "n_inputs": 2,
-                "n_outputs": 2,
-                "n_columns": 8,
-                "n_rows": 2,
-                "levels_back": 3,
-                "primitives": (
-                    cgp.Add,
-                    cgp.Sub,
-                    cgp.Mul,
-                    cgp.ConstantFloat,
-                ),
-            }
-        elif grn_type == "node-edge-etg-advanced-agg":
-            genome_params_edge = {
-                "n_inputs": 10,
-                "n_outputs": 1,
-                "n_columns": 10,
-                "n_rows": 3,
-                "levels_back": 3,
-                "primitives": (
-                    cgp.Add,
-                    cgp.Sub,
-                    cgp.Mul,
-                    cgp.ConstantFloat,
-                ),
-            }
-            genome_params_node = {
-                "n_inputs": 10,
-                "n_outputs": 2,
-                "n_columns": 10,
-                "n_rows": 3,
-                "levels_back": 3,
-                "primitives": (
-                    cgp.Add,
-                    cgp.Sub,
-                    cgp.Mul,
-                    cgp.ConstantFloat,
-                ),
-            }
-        elif grn_type == "node-edge-etg-with-neighbors":
-            genome_params_edge = {
-                "n_inputs": 4,
-                "n_outputs": 1,
-                "n_columns": 10,
-                "n_rows": 5,
-                "levels_back": 3,
-                "primitives": (
-                    cgp.Add,
-                    cgp.Sub,
-                    cgp.Mul,
-                    cgp.ConstantFloat,
-                ),
-            }
-            genome_params_node = {
-                "n_inputs": 4,
-                "n_outputs": 2,
-                "n_columns": 10,
-                "n_rows": 5,
-                "levels_back": 3,
-                "primitives": (
-                    cgp.Add,
-                    cgp.Sub,
-                    cgp.Mul,
-                    cgp.ConstantFloat,
-                ),
-            }
-        else:
-            print('new methods should be implemented')
+    print(f"--- Running Experiment with Seed: {seed} ---")
 
-        ga = CGPGeneticAlgorithm(
-            seedling=seedling,
-            environment=environment,
-            genome_params_node=genome_params_node,
-            genome_params_edge=genome_params_edge,
-            generations=150,
-            population_size=512,
-            population_decay=1.0,
-            min_population_size=128,
-            run_dir=run_dir,
-            initial_epsilon=1.0,
-            epsilon_taper=0.4,
-            crossover_rate= 0.4,
-            num_devo_steps=10,
-            top_k=32,
-            grn_type=grn_type,
-            verbose=True,
-            num_threads=1,
-            seed=seed
-        )
+    grn_type = "node-edge-etg"
 
-        start_time = time()
-        ga.fit()
-        print(f"Finished in {round((time()-start_time)/60, 3)} minutes")
+    run_dir = make_run_dir(grn_type)
+    seedling = define_seedling()
+    environment = define_environment()
 
-        print("The end of program")
+    if grn_type == "node-edge-etg":
+        genome_params_edge = {
+            "n_inputs": 2,
+            "n_outputs": 1,
+            "n_columns": 8,
+            "n_rows": 2,
+            "levels_back": 3,
+            "primitives": (
+                cgp.Add,
+                cgp.Sub,
+                cgp.Mul,
+                cgp.ConstantFloat,
+            ),
+        }
+        genome_params_node = {
+            "n_inputs": 2,
+            "n_outputs": 2,
+            "n_columns": 8,
+            "n_rows": 2,
+            "levels_back": 3,
+            "primitives": (
+                cgp.Add,
+                cgp.Sub,
+                cgp.Mul,
+                cgp.ConstantFloat,
+            ),
+        }
+    elif grn_type == "node-edge-etg-advanced-agg":
+        genome_params_edge = {
+            "n_inputs": 10,
+            "n_outputs": 1,
+            "n_columns": 10,
+            "n_rows": 3,
+            "levels_back": 3,
+            "primitives": (
+                cgp.Add,
+                cgp.Sub,
+                cgp.Mul,
+                cgp.ConstantFloat,
+            ),
+        }
+        genome_params_node = {
+            "n_inputs": 10,
+            "n_outputs": 2,
+            "n_columns": 10,
+            "n_rows": 3,
+            "levels_back": 3,
+            "primitives": (
+                cgp.Add,
+                cgp.Sub,
+                cgp.Mul,
+                cgp.ConstantFloat,
+            ),
+        }
+    elif grn_type == "node-edge-etg-with-neighbors":
+        genome_params_edge = {
+            "n_inputs": 4,
+            "n_outputs": 1,
+            "n_columns": 10,
+            "n_rows": 5,
+            "levels_back": 3,
+            "primitives": (
+                cgp.Add,
+                cgp.Sub,
+                cgp.Mul,
+                cgp.ConstantFloat,
+            ),
+        }
+        genome_params_node = {
+            "n_inputs": 4,
+            "n_outputs": 2,
+            "n_columns": 10,
+            "n_rows": 5,
+            "levels_back": 3,
+            "primitives": (
+                cgp.Add,
+                cgp.Sub,
+                cgp.Mul,
+                cgp.ConstantFloat,
+            ),
+        }
+    else:
+        print('new methods should be implemented')
+
+    ga = CGPGeneticAlgorithm(
+        seedling=seedling,
+        environment=environment,
+        genome_params_node=genome_params_node,
+        genome_params_edge=genome_params_edge,
+        generations=150,
+        population_size=512,
+        population_decay=1.0,
+        min_population_size=128,
+        run_dir=run_dir,
+        initial_epsilon=1.0,
+        epsilon_taper=0.4,
+        crossover_rate= 0.4,
+        num_devo_steps=10,
+        top_k=32,
+        grn_type=grn_type,
+        verbose=True,
+        num_threads=1,
+        seed=seed
+    )
+
+    start_time = time()
+    ga.fit()
+    print(f"Finished in {round((time()-start_time)/60, 3)} minutes")
+
+    print("The end of program")
