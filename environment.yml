@@ -208,4 +208,4 @@ dependencies:
       - numpy==1.18.5
       - pymoo==0.6.0
       - wrapt==1.16.0
-prefix: /home/qzp519/anaconda3/envs/cgp
+
