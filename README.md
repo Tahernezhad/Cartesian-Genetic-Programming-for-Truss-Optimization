@@ -56,3 +56,11 @@ To run the evolutionary algorithm, execute the `main.py` script:
 
 ```bash
 python main.py
+```
+
+## Acknowledgements
+
+Environment modelling concepts originate from the **RIED** project (GitLab): https://gitlab.com/riedproject
+
+- [HAL-CGP](https://happy-algorithms-league.github.io/hal-cgp/)
+---
