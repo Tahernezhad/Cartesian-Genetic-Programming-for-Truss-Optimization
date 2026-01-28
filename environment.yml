@@ -208,4 +208,7 @@ dependencies:
       - numpy==1.18.5
       - pymoo==0.6.0
       - wrapt==1.16.0
+      - pytest
+      - pytest-cov
+      - pytest-mock
 
