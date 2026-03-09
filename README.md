@@ -25,6 +25,19 @@ This repository implements the **CGP-based GRN**, which offers more interpretabl
     * Doing both simultaneously (`node-edge` method).
 * **Fitness Function**: The evolutionary algorithm optimises controllers based on a fitness score that combines the total strain energy and total volume of the truss.
 
+## 🌐 Graph-Based Neighborhood Awareness
+
+Truss structure is naturally represented as a graph, where joints are **nodes** and structural members are **edges**. In the naive CGP, the controller makes developmental decisions in isolation, relying only on its own local state.
+
+However, physical structures rely on local connectivity and load distribution. To better capture this behavior, the system also implements neighborhood-aware developmental modes that allow nodes and edges to "communicate" by sensing the states of their connected neighbors. By leveraging the adjacency matrix of the graph, the CGP controller can generate more interpretable equations that reflect true local interactions.
+
+This repository includes two advanced graph-based methods:
+
+* **Neighbor-Aware Growth (`node-edge-etg-with-neighbors`)**: The controller updates a component by looking at its own state plus the *average* state of its directly connected neighbors. For edges, this means sensing the average strain and volume of adjacent members. For nodes, it senses the average coordinates of connected joints.
+* **Advanced Statistical Aggregators (`node-edge-etg-advanced-agg`)**: This method expands the neighborhood sensing by feeding comprehensive statistical data into the GRN. Alongside the component's own state, the CGP controller receives the *minimum, maximum, average, and standard deviation* of the surrounding neighbors' properties (e.g., neighboring strain distributions or coordinate ranges).
+
+These additions allow the Cartesian Genetic Programming algorithm to discover interpretable, white-box rules that intrinsically understand the structural topology, leading to smarter evolutionary development.
+
 ## 🔧 Getting Started
 
 ### Prerequisites

@@ -77,7 +77,7 @@ if __name__ == "__main__":
 
     print(f"--- Running Experiment with Seed: {seed} ---")
 
-    grn_type = "node-edge-etg"
+    grn_type = "node-edge-etg-advanced-agg"  # Options: "node-edge-etg", "node-edge-etg-advanced-agg", "node-edge-etg-with-neighbors"
 
     run_dir = make_run_dir(grn_type)
     seedling = define_seedling()

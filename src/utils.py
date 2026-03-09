@@ -1,6 +1,5 @@
 import os
 import numpy as np
-
 from enum import Enum
 from datetime import datetime
 
@@ -50,7 +49,7 @@ class Normalizer():
 
     def normalize(self, inputs):
         return np.clip((inputs - self.mean) / np.sqrt(self.var + self.epsilon), -self.clipob, self.clipob)
-    
+
 
 class FitCriteria(Enum):
     """Fitness criteria available in the system.
